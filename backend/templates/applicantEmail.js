@@ -54,11 +54,11 @@ const applicantEmailTemplate = (data) => {
 
     <div class="contact">
       <p>Have questions? We're here to help:</p>
-      <a href="tel:+16472925145">+1 647-292-5145</a>
+      <a href="tel:${process.env.CONTACT_PHONE}">${process.env.CONTACT_PHONE}</a>
       &nbsp;&nbsp;|&nbsp;&nbsp;
-      <a href="mailto:info@regalconsultinggroup.ca">info@regalconsultinggroup.ca</a>
+      <a href="mailto:${process.env.CONTACT_EMAIL}">${process.env.CONTACT_EMAIL}</a>
       <br><br>
-      <a href="https://regalconsultinggroup.ca">regalconsultinggroup.ca</a>
+      <a href="${process.env.CONTACT_WEBSITE}">${process.env.CONTACT_WEBSITE}</a>
     </div>
   </div>
 
