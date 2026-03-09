@@ -8,8 +8,6 @@
 
 This project replaces traditional job application forms with an AI-powered chat agent. Visitors click a chat button on the website, and the agent guides them through selecting a job role, location, shift, and collecting all personal details — then fires a structured email to the owner and a confirmation receipt to the applicant, all automatically.
 
-**Built as a real client project for a staffing agency in Ontario, Canada.**
-
 ---
 
 ## Key Features
@@ -218,7 +216,7 @@ https://yoursite.com,https://your-app.railway.app
 ## Security Notes
 
 - `backend/.env` is in `.gitignore` — credentials are never committed to the repo
-- All client contact details are in environment variables — nothing is hardcoded
+- All contact details are in environment variables — nothing is hardcoded
 - CORS restricts API access to explicitly allowed origins only
 - Resume buffers are held in RAM only and cleared immediately after email is sent
 - No database — sessions are in-memory with automatic 30-minute expiry
