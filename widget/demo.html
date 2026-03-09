@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consulting Group — AI Agent Demo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      background: #f0f4f4; color: #333; min-height: 100vh;
+    }
+
+    /* ── Nav ─────────────────────────────────────────── */
+    nav {
+      background: #0a7f88; padding: 0 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px; position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,.15);
+    }
+    .nav-logo { color: #fff; font-size: 20px; font-weight: 800; letter-spacing: -.3px; }
+    .nav-logo span { opacity: .75; font-weight: 400; font-size: 13px; display: block; margin-top: 1px; }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { color: rgba(255,255,255,.82); text-decoration: none; font-size: 14px; transition: color .15s; }
+    .nav-links a:hover { color: #fff; }
+
+    /* ── Hero ────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, #0a7f88, #065a5f);
+      padding: 72px 40px 80px; text-align: center; color: #fff;
+    }
+    .hero h1 { font-size: 42px; font-weight: 800; line-height: 1.15; margin-bottom: 16px; }
+    .hero p  { font-size: 17px; opacity: .9; max-width: 520px; margin: 0 auto 32px; line-height: 1.65; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3);
+      padding: 10px 22px; border-radius: 30px; font-size: 14px; font-weight: 600;
+    }
+
+    /* ── Demo notice ─────────────────────────────────── */
+    .notice {
+      max-width: 860px; margin: 28px auto 0; padding: 0 20px;
+    }
+    .notice-inner {
+      background: #fff8e1; border: 1.5px solid #f5c842; border-radius: 10px;
+      padding: 13px 18px; font-size: 13px; color: #7a5c00; text-align: center;
+    }
+    .notice-inner strong { color: #5a4200; }
+
+    /* ── Jobs grid ───────────────────────────────────── */
+    .jobs-section { max-width: 860px; margin: 36px auto 60px; padding: 0 20px; }
+    .jobs-section h2 { font-size: 22px; font-weight: 700; margin-bottom: 20px; text-align: center; color: #222; }
+    .jobs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 14px; }
+
+    .job-card {
+      background: #fff; border-radius: 12px; padding: 20px 16px; text-align: center;
+      border: 1.5px solid #e8eeee;
+      box-shadow: 0 2px 8px rgba(0,0,0,.05);
+      transition: border-color .15s, transform .15s, box-shadow .15s;
+    }
+    .job-card:hover { border-color: #0a7f88; transform: translateY(-3px); box-shadow: 0 6px 18px rgba(10,127,136,.12); }
+    .job-card .icon { font-size: 30px; margin-bottom: 10px; }
+    .job-card h3 { font-size: 13.5px; font-weight: 700; color: #222; margin-bottom: 5px; }
+    .job-card p  { font-size: 11.5px; color: #999; line-height: 1.5; }
+
+    /* ── Why section ─────────────────────────────────── */
+    .why { background: #fff; padding: 52px 40px; text-align: center; }
+    .why h2 { font-size: 22px; font-weight: 700; margin-bottom: 32px; color: #222; }
+    .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; max-width: 800px; margin: 0 auto; }
+    .why-card { padding: 20px; }
+    .why-card .w-ico { font-size: 32px; margin-bottom: 12px; }
+    .why-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; color: #222; }
+    .why-card p  { font-size: 13px; color: #777; line-height: 1.6; }
+
+    /* ── Footer ──────────────────────────────────────── */
+    footer {
+      background: #064e54; color: rgba(255,255,255,.7);
+      padding: 28px 40px; text-align: center; font-size: 13px;
+    }
+    footer a { color: rgba(255,255,255,.85); text-decoration: none; margin: 0 10px; }
+    footer p { margin-top: 8px; font-size: 12px; opacity: .6; }
+
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 28px; }
+      nav { padding: 0 20px; }
+      .hero { padding: 48px 20px 56px; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <div class="nav-logo">
+      Consulting Group
+      <span>Ontario's Industrial Staffing Partner</span>
+    </div>
+    <div class="nav-links">
+      <a href="#">Jobs</a>
+      <a href="#">For Employers</a>
+      <a href="#">About Us</a>
+      <a href="#">Contact</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>Your Next Opportunity<br>Starts Here</h1>
+    <p>We connect top-quality, committed candidates with manufacturing, food &amp; bakery, mechanical, and warehousing sectors across Ontario.</p>
+    <div class="hero-badge">&#128172; Chat with our agent to apply in minutes</div>
+  </div>
+
+  <!-- Demo notice -->
+  <div class="notice">
+    <div class="notice-inner">
+      <strong>&#128295; Developer Preview</strong> &mdash;
+      This page simulates the Consulting Group website with the AI agent integrated.
+      Click the <strong>chat button</strong> in the bottom-right corner to experience the full application flow.
+    </div>
+  </div>
+
+  <!-- Jobs -->
+  <div class="jobs-section">
+    <h2>Current Openings Across Ontario</h2>
+    <div class="jobs-grid">
+      <div class="job-card">
+        <div class="icon">&#129683;</div>
+        <h3>Forklift Operator</h3>
+        <p>Etobicoke &bull; Tottenham &bull; Mississauga<br>All shifts available</p>
+      </div>
+      <div class="job-card">
+        <div class="icon">&#128119;</div>
+        <h3>General Labour</h3>
+        <p>Etobicoke &bull; Tottenham &bull; Mississauga<br>All shifts available</p>
+      </div>
+      <div class="job-card">
+        <div class="icon">&#128230;</div>
+        <h3>Skidders &amp; Packers</h3>
+        <p>Etobicoke &bull; Tottenham &bull; Mississauga<br>All shifts available</p>
+      </div>
+      <div class="job-card">
+        <div class="icon">&#128295;</div>
+        <h3>Mechanical Helper</h3>
+        <p>Etobicoke &bull; Tottenham &bull; Mississauga<br>All shifts available</p>
+      </div>
+      <div class="job-card">
+        <div class="icon">&#9881;</div>
+        <h3>Machine Operators</h3>
+        <p>Etobicoke &bull; Tottenham &bull; Mississauga<br>All shifts available</p>
+      </div>
+      <div class="job-card">
+        <div class="icon">&#128666;</div>
+        <h3>Light Loading / Unloading</h3>
+        <p>Etobicoke &bull; Tottenham &bull; Mississauga<br>All shifts available</p>
+      </div>
+      <div class="job-card">
+        <div class="icon">&#129529;</div>
+        <h3>Sanitation Workers</h3>
+        <p>Etobicoke &bull; Tottenham &bull; Mississauga<br>All shifts available</p>
+      </div>
+      <div class="job-card">
+        <div class="icon">&#129514;</div>
+        <h3>Chemical Compounder</h3>
+        <p>Etobicoke &bull; Tottenham &bull; Mississauga<br>All shifts available</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Why -->
+  <div class="why">
+    <h2>Why Choose Consulting Group?</h2>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="w-ico">&#9889;</div>
+        <h4>Apply in Minutes</h4>
+        <p>Our AI agent walks you through the entire application — no forms, no hassle.</p>
+      </div>
+      <div class="why-card">
+        <div class="w-ico">&#127759;</div>
+        <h4>Ontario-Wide Network</h4>
+        <p>Positions across Etobicoke, Tottenham, Mississauga, and growing.</p>
+      </div>
+      <div class="why-card">
+        <div class="w-ico">&#128222;</div>
+        <h4>Personal Follow-Up</h4>
+        <p>Our team reviews every application and calls you directly when a match is found.</p>
+      </div>
+      <div class="why-card">
+        <div class="w-ico">&#128200;</div>
+        <h4>Your Growth, Our Mission</h4>
+        <p>We connect committed candidates with employers who value long-term partnerships.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div>
+      <a href="tel:+16472925145">+1 647-292-5145</a>
+      <a href="mailto:info@regalconsultinggroup.ca">info@regalconsultinggroup.ca</a>
+      <a href="https://regalconsultinggroup.ca">regalconsultinggroup.ca</a>
+    </div>
+    <p>&copy; 2026 Consulting Group &mdash; Ontario, Canada</p>
+  </footer>
+
+  <!--
+    WORDPRESS INTEGRATION — this is the only line that goes on the client's site:
+    <script src="https://YOUR-BACKEND-URL.railway.app/widget/embed.js" data-api="https://YOUR-BACKEND-URL.railway.app"></script>
+  -->
+  <script src="embed.js" data-api="http://localhost:3001"></script>
+
+</body>
+</html>

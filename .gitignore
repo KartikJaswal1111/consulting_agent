@@ -1,0 +1,17 @@
+# ─── Dependencies ─────────────────────────────────────────────────────────────
+node_modules/
+
+# ─── Environment / Secrets ────────────────────────────────────────────────────
+# NEVER commit .env — it contains real credentials (email password, API keys)
+backend/.env
+.env
+
+# ─── Upload temp files ────────────────────────────────────────────────────────
+uploads/
+*.tmp
+
+# ─── OS / Editor ──────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+*.log
