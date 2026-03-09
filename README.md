@@ -23,7 +23,6 @@ An agentic job application system for Consulting Group, built for embedding into
 | File Uploads | Multer (in-memory, no disk storage) |
 | Sessions | In-memory Map (30-min TTL, no database needed) |
 | Frontend | Vanilla JS embeddable widget (zero dependencies) |
-| Deployment | Railway (backend) + WordPress (widget embed) |
 
 ---
 
@@ -72,9 +71,9 @@ CONFIRMATION → SUBMITTED
 
 ## Available Jobs & Locations
 
-**Roles:** Forklift Operator, General Labour, Skidders & Packers, Mechanical Helper, Machine Operators, Light Loading/Unloading, Sanitation Workers, Chemical Compounder
+**Roles:** Whatever user wants to publish
 
-**Locations:** Etobicoke, Tottenham, Mississauga
+**Locations:** Upto User
 
 **Shifts:** Morning (6AM–2PM), Afternoon (2PM–10PM), Night (10PM–6AM)
 
@@ -226,6 +225,5 @@ https://consultinggroup.ca,https://your-app.railway.app
 
 ## Contact
 
-Built for **Consulting Group** — Ontario's Industrial Staffing Partner
+Built for **Consulting Group** — 
 
-+1 647-292-5145 | info@consultinggroup.ca
