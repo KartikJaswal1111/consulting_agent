@@ -61,10 +61,13 @@
 
     /* ── Chat window ── */
     #regal-window {
-      position: fixed; bottom: 100px; right: 28px; z-index: 9999;
-      width: 380px; height: 600px; border-radius: 20px;
+      position: fixed; bottom: 96px; right: 28px; z-index: 9999;
+      width: 390px;
+      height: min(620px, calc(100dvh - 116px));
+      max-height: calc(100dvh - 116px);
+      border-radius: 20px;
       background: #fff; display: flex; flex-direction: column; overflow: hidden;
-      box-shadow: 0 12px 56px rgba(0,0,0,0.2);
+      box-shadow: 0 12px 56px rgba(0,0,0,0.22);
       transform: scale(.92) translateY(20px); opacity: 0; pointer-events: none;
       transition: transform .28s cubic-bezier(.34,1.56,.64,1), opacity .22s ease;
     }
@@ -75,7 +78,7 @@
     /* ── Header ── */
     #regal-header {
       background: linear-gradient(135deg, #0a7f88 0%, #065f65 100%);
-      padding: 14px 16px; display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+      padding: 14px 18px; display: flex; align-items: center; gap: 12px; flex-shrink: 0;
     }
     .r-av {
       width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
@@ -110,54 +113,55 @@
 
     /* ── Messages ── */
     #regal-msgs {
-      flex: 1; overflow-y: auto; padding: 16px 14px 10px;
-      background: #f4f7f7;
-      display: flex; flex-direction: column; gap: 6px;
+      flex: 1; overflow-y: auto; padding: 18px 16px 12px;
+      background: #f2f6f6;
+      display: flex; flex-direction: column; gap: 10px;
       scroll-behavior: smooth;
     }
     #regal-msgs::-webkit-scrollbar { width: 4px; }
-    #regal-msgs::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+    #regal-msgs::-webkit-scrollbar-thumb { background: #c5d5d6; border-radius: 2px; }
 
-    .r-row { display: flex; align-items: flex-end; gap: 8px; animation: rFadeUp .2s ease; }
+    .r-row { display: flex; align-items: flex-end; gap: 10px; animation: rFadeUp .2s ease; }
     .r-row.user { flex-direction: row-reverse; }
     @keyframes rFadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
     .r-ico {
-      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
       background: ${CONFIG.color}; display: flex; align-items: center;
       justify-content: center; font-size: 13px; color: #fff; font-weight: 700;
-      margin-bottom: 2px;
+      margin-bottom: 2px; box-shadow: 0 2px 6px rgba(10,127,136,.25);
     }
-    .r-row.user .r-ico { background: #c8dfe0; color: #065f65; }
+    .r-row.user .r-ico { background: #b8d8da; color: #065f65; }
 
     .r-bubble {
-      max-width: 80%; padding: 10px 14px; border-radius: 18px;
-      font-size: 13.5px; line-height: 1.55; color: #222;
-      background: #fff;
-      box-shadow: 0 1px 4px rgba(0,0,0,.08);
-      border-bottom-left-radius: 5px;
+      max-width: 78%; padding: 11px 16px; border-radius: 18px;
+      font-size: 14px; line-height: 1.6; color: #1a1a1a;
+      background: #ffffff;
+      box-shadow: 0 1px 6px rgba(0,0,0,.09);
+      border-bottom-left-radius: 4px;
       word-break: break-word; white-space: pre-wrap;
     }
     .r-row.user .r-bubble {
       background: ${CONFIG.color}; color: #fff;
-      border-bottom-right-radius: 5px; border-bottom-left-radius: 18px;
+      border-bottom-right-radius: 4px; border-bottom-left-radius: 18px;
+      box-shadow: 0 2px 8px rgba(10,127,136,.3);
     }
     .r-bubble strong { font-weight: 700; }
 
     /* ── Inline quick-reply chips ── */
     .r-chips {
       display: flex; flex-wrap: wrap; gap: 8px;
-      padding: 4px 0 4px 36px;
+      padding: 2px 0 4px 42px;
       animation: rFadeUp .2s ease;
     }
     .r-chip {
-      padding: 8px 16px;
+      padding: 9px 18px;
       border: 1.5px solid ${CONFIG.color};
       color: ${CONFIG.color}; background: #fff;
-      border-radius: 22px; font-size: 13px; font-weight: 600;
+      border-radius: 22px; font-size: 13.5px; font-weight: 600;
       cursor: pointer; white-space: nowrap;
       transition: background .15s, color .15s, transform .1s, box-shadow .15s;
-      box-shadow: 0 1px 4px rgba(10,127,136,.12);
+      box-shadow: 0 1px 5px rgba(10,127,136,.13);
     }
     .r-chip:hover {
       background: ${CONFIG.color}; color: #fff;

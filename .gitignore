@@ -10,6 +10,15 @@ backend/.env
 uploads/
 *.tmp
 
+# ─── Internal design docs (local reference only) ─────────────────────────────
+design.md
+system_design.md
+
+# ─── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+backend_py/.env
+
 # ─── OS / Editor ──────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db

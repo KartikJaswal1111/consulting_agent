@@ -1,0 +1,81 @@
+import os
+from datetime import datetime
+
+
+def applicant_email_template(data: dict) -> str:
+    first_name = (data.get("name") or "there").split()[0]
+    year = datetime.now().year
+    resume_status = "Submitted" if data.get("resumeFileName") else "Not provided"
+
+    phone   = os.getenv("CONTACT_PHONE", "")
+    email   = os.getenv("CONTACT_EMAIL", "")
+    website = os.getenv("CONTACT_WEBSITE", "")
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {{ margin: 0; padding: 20px; background: #f0f4f4; font-family: Arial, sans-serif; }}
+  .wrap {{ max-width: 560px; margin: 0 auto; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }}
+  .header {{ background: #0a7f88; padding: 32px 28px; text-align: center; }}
+  .checkmark {{ font-size: 48px; margin-bottom: 8px; }}
+  .header h1 {{ margin: 0 0 6px; color: #fff; font-size: 22px; }}
+  .header p {{ margin: 0; color: rgba(255,255,255,0.88); font-size: 14px; }}
+  .body {{ padding: 28px; }}
+  .body p {{ margin: 0 0 16px; font-size: 14px; color: #444; line-height: 1.6; }}
+  .summary {{ background: #f7fafa; border: 1px solid #e0eeee; border-radius: 8px; padding: 4px 0; margin: 20px 0; }}
+  .row {{ display: flex; padding: 10px 18px; border-bottom: 1px solid #eef4f4; font-size: 13px; }}
+  .row:last-child {{ border-bottom: none; }}
+  .lbl {{ width: 110px; color: #999; flex-shrink: 0; }}
+  .val {{ color: #222; font-weight: 600; }}
+  .note {{ background: #e6f4f5; border-left: 4px solid #0a7f88; padding: 14px 16px; border-radius: 0 6px 6px 0; font-size: 13px; color: #2a5f63; margin: 20px 0; line-height: 1.6; }}
+  .contact {{ text-align: center; margin: 24px 0 8px; }}
+  .contact p {{ font-size: 13px; color: #777; margin: 0 0 12px; }}
+  .contact a {{ color: #0a7f88; text-decoration: none; font-weight: 600; }}
+  .footer {{ padding: 16px 28px; background: #f7fafa; text-align: center; font-size: 11px; color: #bbb; border-top: 1px solid #eee; }}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="checkmark">&#10003;</div>
+    <h1>Application Received!</h1>
+    <p>Thank you for applying, {first_name}</p>
+  </div>
+
+  <div class="body">
+    <p>We've received your application for <strong>{data.get('jobRole')}</strong> at Consulting Group. Here's a summary for your records:</p>
+
+    <div class="summary">
+      <div class="row"><span class="lbl">Position</span><span class="val">{data.get('jobRole')}</span></div>
+      <div class="row"><span class="lbl">Location</span><span class="val">{data.get('location')}, Ontario</span></div>
+      <div class="row"><span class="lbl">Shift</span><span class="val">{data.get('shift')}</span></div>
+      <div class="row"><span class="lbl">Start Date</span><span class="val">{data.get('startDate')}</span></div>
+      <div class="row"><span class="lbl">Resume</span><span class="val">{resume_status}</span></div>
+    </div>
+
+    <div class="note">
+      Our recruitment team will review your profile and reach out to you at <strong>{data.get('phone')}</strong> if a suitable position is available. We appreciate your patience.
+    </div>
+
+    <div class="contact">
+      <p>Have questions? We're here to help:</p>
+      <a href="tel:{phone}">{phone}</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a href="mailto:{email}">{email}</a>
+      <br><br>
+      <a href="{website}">{website}</a>
+    </div>
+  </div>
+
+  <div class="footer">
+    &copy; {year} Consulting Group &nbsp;&bull;&nbsp; Ontario, Canada<br>
+    You received this because you submitted a job application via our website.
+  </div>
+
+</div>
+</body>
+</html>"""

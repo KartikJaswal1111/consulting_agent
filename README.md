@@ -12,7 +12,7 @@ This project replaces traditional job application forms with an AI-powered chat 
 
 ## Key Features
 
-- Conversational AI agent powered by Claude Haiku (Anthropic)
+- Conversational AI agent powered by Claude Haiku (`claude-haiku-4-5-20251001`) via Anthropic SDK
 - 12-state backend state machine — Claude handles natural language only, never application logic
 - Mock Mode for demos with zero API key requirement
 - Resume upload (PDF/DOC) attached directly to owner email — no cloud storage needed
@@ -21,6 +21,7 @@ This project replaces traditional job application forms with an AI-powered chat 
 - In-memory sessions with 30-min TTL — no database required
 - Field-by-field validation (email, Canadian phone, 18+ DOB check, future start date)
 - Progress bar, inline quick-reply chips, spring animations, mobile-responsive
+- Auto-generated Swagger API docs at `/docs`
 
 ---
 
@@ -28,11 +29,11 @@ This project replaces traditional job application forms with an AI-powered chat 
 
 | Layer | Technology |
 |-------|------------|
-| Backend | Node.js + Express |
+| Backend | Python + FastAPI |
 | AI | Claude Haiku (`claude-haiku-4-5-20251001`) via Anthropic SDK |
-| Email | Nodemailer + Gmail SMTP |
-| File Uploads | Multer (in-memory, no disk storage) |
-| Sessions | In-memory Map (30-min TTL, no database needed) |
+| Email | smtplib + Gmail SMTP (built-in, no extra library) |
+| File Uploads | FastAPI `UploadFile` (in-memory, no disk storage) |
+| Sessions | In-memory dict with threading (30-min TTL, no database needed) |
 | Frontend | Vanilla JS embeddable widget (zero dependencies) |
 | Deployment | Railway (backend) + WordPress via WPCode (widget) |
 
@@ -42,25 +43,25 @@ This project replaces traditional job application forms with an AI-powered chat 
 
 ```
 .
-├── backend/
-│   ├── server.js                  # Express entry point, CORS, routes
-│   ├── package.json
+├── backend_py/
+│   ├── main.py                    # FastAPI entry point, CORS, routes, startup
+│   ├── requirements.txt           # Python dependencies
 │   ├── .env.example               # Environment variable template (safe to commit)
 │   ├── routes/
-│   │   ├── chat.js                # POST /api/chat/start & /api/chat/message
-│   │   └── submit.js              # POST /api/submit
+│   │   ├── chat.py                # POST /api/chat/start & /api/chat/message
+│   │   └── submit.py              # POST /api/submit
 │   ├── services/
-│   │   ├── claude.js              # Claude API calls + Mock Mode responses
-│   │   ├── session.js             # In-memory session management
-│   │   └── email.js               # Gmail SMTP email dispatch
+│   │   ├── claude.py              # Anthropic SDK wrapper + Mock Mode
+│   │   ├── session.py             # In-memory session management with TTL
+│   │   └── email.py               # Gmail SMTP email dispatch (async)
 │   ├── prompts/
-│   │   └── systemPrompt.js        # Dynamic system prompt builder per state
+│   │   └── system_prompt.py       # Dynamic per-state system prompt builder
 │   ├── templates/
-│   │   ├── ownerEmail.js          # HTML email template for owner notification
-│   │   └── applicantEmail.js      # HTML confirmation email for applicant
+│   │   ├── owner_email.py         # HTML email template for owner notification
+│   │   └── applicant_email.py     # HTML confirmation email for applicant
 │   └── utils/
-│       ├── stateManager.js        # 12-state machine definition + job/location data
-│       └── validator.js           # Per-field input validation
+│       ├── state_manager.py       # 12-state machine definition + job/location data
+│       └── validator.py           # Per-field input validation
 └── widget/
     ├── embed.js                   # Self-contained chat widget (IIFE, no dependencies)
     └── demo.html                  # Simulated website for client demo/testing
@@ -70,7 +71,7 @@ This project replaces traditional job application forms with an AI-powered chat 
 
 ## How the State Machine Works
 
-The agent follows a strict 12-state linear flow. Claude **only generates natural language** — all routing, validation, and state transitions are handled by the backend. This makes the system predictable and eliminates hallucination risk.
+The agent follows a strict 12-state linear flow. Claude **only generates natural language** — all routing, validation, and state transitions are handled by the backend. This eliminates hallucination risk entirely.
 
 ```
 JOB_SELECTION → LOCATION_SELECTION → SHIFT_SELECTION →
@@ -79,7 +80,7 @@ COLLECT_START_DATE → COLLECT_RESUME → COLLECT_LINKEDIN →
 CONFIRMATION → SUBMITTED
 ```
 
-Users can also say "edit [field]" at the confirmation screen to jump back to any step.
+Users can say "edit [field]" at the confirmation screen to jump back to any step.
 
 ---
 
@@ -95,8 +96,8 @@ cd ai-job-intake-agent
 ### 2. Install dependencies
 
 ```bash
-cd backend
-npm install
+cd backend_py
+pip install -r requirements.txt
 ```
 
 ### 3. Configure environment variables
@@ -105,10 +106,10 @@ npm install
 cp .env.example .env
 ```
 
-Edit `backend/.env` with your values:
+Edit `backend_py/.env` with your values:
 
 ```env
-PORT=3001
+PORT=8000
 MOCK_MODE=true                          # true = no API key needed (great for testing)
 
 ANTHROPIC_API_KEY=sk-ant-your-key-here  # Only needed when MOCK_MODE=false
@@ -129,17 +130,25 @@ ALLOWED_ORIGINS=http://localhost:5500,http://127.0.0.1:5500
 ### 4. Start the backend
 
 ```bash
-npm run dev       # development with auto-restart (nodemon)
-npm start         # production
+python -m uvicorn main:app --reload --port 8000
 ```
 
-Backend runs at `http://localhost:3001`
+Backend runs at `http://localhost:8000`
+
+> **Note:** Use `python -m uvicorn` instead of `uvicorn` directly to avoid PATH issues on Windows.
 
 ### 5. Open the demo
 
 Open `widget/demo.html` using **Live Server** (VS Code extension) on port 5500.
 
 The chat button appears bottom-right. With `MOCK_MODE=true` the full flow works instantly — no API key needed.
+
+### 6. Explore the API docs
+
+FastAPI auto-generates interactive API documentation at:
+```
+http://localhost:8000/docs
+```
 
 ---
 
@@ -156,7 +165,7 @@ The chat button appears bottom-right. With `MOCK_MODE=true` the full flow works 
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `PORT` | No | Server port (default: `3001`) |
+| `PORT` | No | Server port (default: `8000`) |
 | `MOCK_MODE` | Yes | `true` or `false` |
 | `ANTHROPIC_API_KEY` | Only if `MOCK_MODE=false` | From [console.anthropic.com](https://console.anthropic.com) |
 | `EMAIL_FROM` | Yes | Gmail address used to send emails |
@@ -178,6 +187,7 @@ The chat button appears bottom-right. With `MOCK_MODE=true` the full flow works 
 | `POST` | `/api/submit` | Submit application, trigger both emails |
 | `GET` | `/api/health` | Health check (used by Railway for uptime monitoring) |
 | `GET` | `/widget/embed.js` | Serve the embeddable widget script |
+| `GET` | `/docs` | Auto-generated Swagger UI (FastAPI) |
 
 ---
 
@@ -185,9 +195,9 @@ The chat button appears bottom-right. With `MOCK_MODE=true` the full flow works 
 
 1. Push this repo to GitHub
 2. Go to [railway.app](https://railway.app) → **New Project** → Deploy from GitHub repo
-3. Set the **Root Directory** to `backend/`
+3. Set the **Root Directory** to `backend_py/`
 4. Add all environment variables in Railway's Variables tab
-5. Railway auto-detects `npm start` — no config file needed
+5. Set the **Start Command** to `python -m uvicorn main:app --host 0.0.0.0 --port $PORT`
 6. Copy your Railway public URL (e.g. `https://your-app.railway.app`)
 
 Update `widget/demo.html` to point to the live backend:
@@ -215,7 +225,7 @@ https://yoursite.com,https://your-app.railway.app
 
 ## Security Notes
 
-- `backend/.env` is in `.gitignore` — credentials are never committed to the repo
+- `backend_py/.env` is in `.gitignore` — credentials are never committed to the repo
 - All contact details are in environment variables — nothing is hardcoded
 - CORS restricts API access to explicitly allowed origins only
 - Resume buffers are held in RAM only and cleared immediately after email is sent
@@ -231,5 +241,6 @@ https://yoursite.com,https://your-app.railway.app
 - [ ] Set `OWNER_EMAIL` to the client's actual inbox
 - [ ] Fill in `CONTACT_PHONE`, `CONTACT_EMAIL`, `CONTACT_WEBSITE`
 - [ ] Add the live domain to `ALLOWED_ORIGINS`
+- [ ] Set Railway start command to `python -m uvicorn main:app --host 0.0.0.0 --port $PORT`
 - [ ] Inject the script tag into WordPress via WPCode
 - [ ] Test the full flow end-to-end on the live site
