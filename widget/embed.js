@@ -500,7 +500,7 @@
       setInputMode('text', false); // text input disabled until free-text state
     } catch {
       hideTyping();
-      addMessage('Having trouble connecting. Please call +1\u00a0647-292-5145.', false);
+      addMessage('Having trouble connecting. Please contact us directly.', false);
     }
   }
 
@@ -586,7 +586,7 @@
         hideInputArea();
         sessionId = null;
       } else {
-        addMessage('There was an issue submitting. Please try again or call +1\u00a0647-292-5145.', false);
+        addMessage('There was an issue submitting. Please try again or contact us directly.', false);
         addChips(['Submit Application', 'Edit Details'], handleButtonClick);
       }
     } catch {

@@ -1,0 +1,10 @@
+services:
+  agent:
+    build:
+      context: .                        # project root — gives access to both backend_py/ and widget/
+      dockerfile: backend_py/Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend_py/.env
+    restart: unless-stopped
