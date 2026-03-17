@@ -35,7 +35,8 @@ This project replaces traditional job application forms with an AI-powered chat 
 | File Uploads | FastAPI `UploadFile` (in-memory, no disk storage) |
 | Sessions | In-memory dict with threading (30-min TTL, no database needed) |
 | Frontend | Vanilla JS embeddable widget (zero dependencies) |
-| Deployment | Railway (backend) + WordPress via WPCode (widget) |
+| Containerization | Docker + Docker Compose |
+| Deployment | Any cloud host (VPS, Render, Fly.io, etc.) + WordPress via WPCode (widget) |
 
 ---
 
@@ -43,6 +44,9 @@ This project replaces traditional job application forms with an AI-powered chat 
 
 ```
 .
+├── Dockerfile                         # Docker image (build context: project root)
+├── docker-compose.yml                 # One-command local/production run
+├── .dockerignore                      # Keeps image clean (no .env, __pycache__)
 ├── backend_py/
 │   ├── main.py                    # FastAPI entry point, CORS, routes, startup
 │   ├── requirements.txt           # Python dependencies
@@ -185,24 +189,49 @@ http://localhost:8000/docs
 | `POST` | `/api/chat/start` | Create session, return greeting + job buttons |
 | `POST` | `/api/chat/message` | Send user message, receive agent response |
 | `POST` | `/api/submit` | Submit application, trigger both emails |
-| `GET` | `/api/health` | Health check (used by Railway for uptime monitoring) |
+| `GET` | `/api/health` | Health check endpoint |
 | `GET` | `/widget/embed.js` | Serve the embeddable widget script |
 | `GET` | `/docs` | Auto-generated Swagger UI (FastAPI) |
 
 ---
 
-## Deployment (Railway)
+## Deployment (Docker)
 
-1. Push this repo to GitHub
-2. Go to [railway.app](https://railway.app) → **New Project** → Deploy from GitHub repo
-3. Set the **Root Directory** to `backend_py/`
-4. Add all environment variables in Railway's Variables tab
-5. Set the **Start Command** to `python -m uvicorn main:app --host 0.0.0.0 --port $PORT`
-6. Copy your Railway public URL (e.g. `https://your-app.railway.app`)
+The project ships with a `Dockerfile` and `docker-compose.yml` for easy self-hosted deployment.
+
+### Build and run with Docker Compose
+
+```bash
+# From the project root
+docker compose up --build
+```
+
+Backend runs at `http://localhost:8000`.
+
+### Build and run manually
+
+```bash
+docker build -f backend_py/Dockerfile -t consulting-agent .
+docker run -p 8000:8000 --env-file backend_py/.env consulting-agent
+```
+
+> The Docker image bundles both `backend_py/` and `widget/` — the widget is served as a static file from the same container.
+
+### Deploy to any cloud host
+
+The container can be deployed to any host that supports Docker (Render, Fly.io, DigitalOcean, AWS ECS, etc.):
+
+1. Push the image to a container registry (Docker Hub, GHCR, etc.)
+2. Set all environment variables on the host platform
+3. Set the start command to:
+   ```
+   python -m uvicorn main:app --host 0.0.0.0 --port $PORT
+   ```
+4. Note your public URL (e.g. `https://your-app.example.com`)
 
 Update `widget/demo.html` to point to the live backend:
 ```html
-<script src="embed.js" data-api="https://your-app.railway.app"></script>
+<script src="embed.js" data-api="https://your-app.example.com"></script>
 ```
 
 ---
@@ -212,13 +241,13 @@ Update `widget/demo.html` to point to the live backend:
 Once deployed, add this single line via **WPCode** plugin → Footer scripts:
 
 ```html
-<script src="https://your-app.railway.app/widget/embed.js"
-        data-api="https://your-app.railway.app"></script>
+<script src="https://your-app.example.com/widget/embed.js"
+        data-api="https://your-app.example.com"></script>
 ```
 
-Add the WordPress domain to `ALLOWED_ORIGINS` in Railway:
+Add the WordPress domain to `ALLOWED_ORIGINS` in your environment:
 ```
-https://yoursite.com,https://your-app.railway.app
+https://yoursite.com,https://your-app.example.com
 ```
 
 ---
@@ -241,6 +270,6 @@ https://yoursite.com,https://your-app.railway.app
 - [ ] Set `OWNER_EMAIL` to the client's actual inbox
 - [ ] Fill in `CONTACT_PHONE`, `CONTACT_EMAIL`, `CONTACT_WEBSITE`
 - [ ] Add the live domain to `ALLOWED_ORIGINS`
-- [ ] Set Railway start command to `python -m uvicorn main:app --host 0.0.0.0 --port $PORT`
+- [ ] Deploy container and set start command: `python -m uvicorn main:app --host 0.0.0.0 --port $PORT`
 - [ ] Inject the script tag into WordPress via WPCode
 - [ ] Test the full flow end-to-end on the live site
