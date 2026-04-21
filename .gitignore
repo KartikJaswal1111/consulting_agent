@@ -1,5 +1,7 @@
 # ─── Dependencies ─────────────────────────────────────────────────────────────
 node_modules/
+venv/
+.venv/
 
 # ─── Environment / Secrets ────────────────────────────────────────────────────
 # NEVER commit .env — it contains real credentials (email password, API keys)
